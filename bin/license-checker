@@ -20,6 +20,7 @@ if (args.help) {
         '',
         '   --production only show production dependencies.',
         '   --development only show development dependencies.',
+        '   --start [path of the initial json to look for]',
         '   --unknown report guessed licenses as unknown licenses.',
         '   --onlyunknown only list packages with unknown or guessed licenses.',
         '   --json output in json format.',
@@ -32,6 +33,7 @@ if (args.help) {
         '   --summary output a summary of the license usage',
         '   --failOn [list] fail (exit with code 1) on the first occurrence of the licenses of the semicolon-separated list',
         '   --onlyAllow [list] fail (exit with code 1) on the first occurrence of the licenses not in the semicolon-seperated list',
+        '   --depth look for dependencies infinitely (default), --no-depth in order to look for direct dependencies only',
         '   --packages [list] restrict output to the packages (package@version) in the semicolon-seperated list',
         '   --excludePackages [list] restrict output to the packages (package@version) not in the semicolon-seperated list',
         '   --excludePrivatePackages restrict output to not include any package marked as private',
@@ -58,6 +60,13 @@ if (args.failOn && args.onlyAllow) {
         var argName = args.failOn ? 'failOn' : 'onlyAllow';
         console.warn('Warning: As of v17 the --' + argName + ' argument takes semicolons as delimeters instead of commas (some license names can contain commas)');
     }
+}
+
+// Prepare args.depth for read-installed
+if (args.depth === undefined || args.depth) {
+    args.depth = Infinity;
+} else {
+    args.depth = 0;
 }
 
 checker.init(args, function(err, json) {
